@@ -3,7 +3,7 @@ import glob
 import shutil
 from sklearn.model_selection import train_test_split
 import shutil
-
+import csv
 
 def split_data(path_to_data, path_to_save_train, path_to_save_val, split_size=0.2):
     
@@ -31,3 +31,29 @@ def split_data(path_to_data, path_to_save_train, path_to_save_val, split_size=0.
                 os.makedirs(path_to_folder)
 
             shutil.copy(x, path_to_folder)
+
+def order_test_data(path_to_csv, path_to_data):
+    try:
+        with open(path_to_csv, 'r') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+        
+            for i,row in enumerate(reader):
+                if i==0:
+                    continue
+
+                img_name = row[-1].replace('Test/', '')
+                label = row[-2]
+
+                path_to_folder = os.path.join(path_to_data, label)
+                img_full_path = os.path.join(path_to_data, img_name)
+
+                if not os.path.isdir(path_to_folder):
+                    os.makedirs(path_to_folder)
+
+                shutil.move(img_full_path, path_to_folder)
+    except:
+        print("[INFO] : Error reading csv file")
+
+                
+
+
