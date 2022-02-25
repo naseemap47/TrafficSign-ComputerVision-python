@@ -4,6 +4,7 @@ import shutil
 from sklearn.model_selection import train_test_split
 import shutil
 import csv
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def split_data(path_to_data, path_to_save_train, path_to_save_val, split_size=0.2):
     
@@ -55,5 +56,33 @@ def order_test_data(path_to_csv, path_to_data):
         print("[INFO] : Error reading csv file")
 
                 
-
+def create_generators(batch_size, path_to_train_data, path_to_val_data, path_to_test_data):
+    preprocessor = ImageDataGenerator(
+        rescale = 1/225
+    )
+    train_generators = preprocessor.flow_from_directory(
+        path_to_train_data,
+        target_size=(70,70),
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=batch_size,
+        shuffle=True
+    )
+    val_generators = preprocessor.flow_from_directory(
+        path_to_val_data,
+        target_size=(70,70),
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=batch_size,
+        shuffle=False
+    )
+    test_generators = preprocessor.flow_from_directory(
+        path_to_test_data,
+        target_size=(70,70),
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=batch_size,
+        shuffle=False
+    )
+    return train_generators, val_generators, test_generators
 
