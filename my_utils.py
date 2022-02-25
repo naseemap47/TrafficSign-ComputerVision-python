@@ -5,6 +5,8 @@ from sklearn.model_selection import train_test_split
 import shutil
 import csv
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
+import numpy as np
 
 def split_data(path_to_data, path_to_save_train, path_to_save_val, split_size=0.2):
     
@@ -92,3 +94,14 @@ def create_generators(batch_size, path_to_train_data, path_to_val_data, path_to_
     )
     return train_generators, val_generators, test_generators
 
+def predict_with_model(img_path, model):
+    image = tf.io.read_file(img_path)
+    image = tf.image.decode_png(image, channels=3)
+    image = tf.image.convert_image_dtype(image, dtype=tf.float32)
+    image = tf.image.resize(image, [70,70]) # (70,70,3)
+    image = tf.expand_dims(image, axis=0) # (1,70,70,3)
+
+    predictions = model.predict(image) #[0.009,0.09,0.99, 0.0009,...]
+    predictions = np.argmax(predictions) # 3
+
+    return predictions
