@@ -96,8 +96,8 @@ def create_generators(batch_size, path_to_train_data, path_to_val_data, path_to_
 
 def predict_with_model(img_path, model):
     image = tf.io.read_file(img_path)
-    image = tf.io.decode_png(image, channels=3)
-    image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.image.decode_png(image, channels=3)
+    image = tf.image.convert_image_dtype(image, dtype=tf.float32)
     image = tf.image.resize(image, [70,70]) # (70,70,3)
     image = tf.expand_dims(image, axis=0) # (1,70,70,3)
 
