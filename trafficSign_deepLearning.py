@@ -1,3 +1,5 @@
+from ast import If
+from unittest import TestCase
 from my_utils import create_generators
 from deepLearning_model import trafficSign_model
 from tensorflow.keras.callbacks import EarlyStopping
@@ -16,35 +18,51 @@ if __name__=='__main__':
         path_to_val_data=path_to_val,
         path_to_test_data=path_to_test
     )
-    number_classes = train_generators.num_classes
 
-    early_stopping = EarlyStopping(
-        min_delta=0.001,
-        patience=10,
-        mode='min',
-        restore_best_weights=True,
-        verbose=1
-    )
-
-    model = trafficSign_model(no_classes=number_classes)
-    model.compile(
-        optimizer='adam',
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
-    )
-    model.fit(
-        train_generators,
-        batch_size=32,
-        epochs=2,
-        validation_data=val_generators,
-        callbacks=[early_stopping]
-    )
-
-    # Save Model in a h5 format
-    
-    if os.path.isfile(
-    '/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5'
-    ) is False:
-        model.save(
-            '/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5'
+    # swiches
+    TRAIN = False
+    TEST = True
+    if TRAIN:
+        number_classes = train_generators.num_classes
+        early_stopping = EarlyStopping(
+            min_delta=0.001,
+            patience=10,
+            mode='min',
+            restore_best_weights=True,
+            verbose=1
         )
+
+        model = trafficSign_model(no_classes=number_classes)
+        model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        model.fit(
+            train_generators,
+            batch_size=32,
+            epochs=2,
+            validation_data=val_generators,
+            callbacks=[early_stopping]
+        )
+
+        # Save Model in a h5 format
+    
+        if os.path.isfile(
+        '/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5'
+        ) is False:
+            model.save(
+                '/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5'
+            )
+
+    if TEST:
+        saved_model = load_model('/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5')
+        saved_model.summary()
+
+        # Evaluate Validation dataset
+        print("Evaluate Validation data:")
+        saved_model.evaluate(val_generators)
+
+        # Evaluate Test dataset
+        print("Evaluate Test data:")
+        saved_model.evaluate(test_generators)

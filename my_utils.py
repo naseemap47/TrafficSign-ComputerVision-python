@@ -58,7 +58,13 @@ def order_test_data(path_to_csv, path_to_data):
                 
 def create_generators(batch_size, path_to_train_data, path_to_val_data, path_to_test_data):
     preprocessor = ImageDataGenerator(
-        rescale = 1/225
+        rescale = 1/225,
+        rotation_range=10,
+        width_shift_range=0.1,
+        height_shift_range=0.1
+    )
+    test_preprocessor = ImageDataGenerator(
+        rescale = 1 / 225
     )
     train_generators = preprocessor.flow_from_directory(
         path_to_train_data,
@@ -68,7 +74,7 @@ def create_generators(batch_size, path_to_train_data, path_to_val_data, path_to_
         batch_size=batch_size,
         shuffle=True
     )
-    val_generators = preprocessor.flow_from_directory(
+    val_generators = test_preprocessor.flow_from_directory(
         path_to_val_data,
         target_size=(70,70),
         color_mode='rgb',
@@ -76,7 +82,7 @@ def create_generators(batch_size, path_to_train_data, path_to_val_data, path_to_
         batch_size=batch_size,
         shuffle=False
     )
-    test_generators = preprocessor.flow_from_directory(
+    test_generators = test_preprocessor.flow_from_directory(
         path_to_test_data,
         target_size=(70,70),
         color_mode='rgb',
