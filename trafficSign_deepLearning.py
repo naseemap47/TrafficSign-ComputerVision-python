@@ -20,8 +20,8 @@ if __name__=='__main__':
     )
 
     # swiches
-    TRAIN = True
-    TEST = False
+    TRAIN = False
+    TEST = True
     if TRAIN:
         number_classes = train_generators.num_classes
         early_stopping = EarlyStopping(
