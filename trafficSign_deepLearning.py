@@ -1,10 +1,9 @@
-from ast import If
-from unittest import TestCase
 from my_utils import create_generators
 from deepLearning_model import trafficSign_model
 from tensorflow.keras.callbacks import EarlyStopping
 import os
 from tensorflow.keras.models import load_model
+from my_utils import predict_with_model
 
 if __name__=='__main__':
 
@@ -21,7 +20,9 @@ if __name__=='__main__':
 
     # swiches
     TRAIN = False
-    TEST = True
+    TEST = False
+    PREDICT = True
+
     if TRAIN:
         number_classes = train_generators.num_classes
         early_stopping = EarlyStopping(
@@ -66,3 +67,12 @@ if __name__=='__main__':
         # Evaluate Test dataset
         print("Evaluate Test data:")
         saved_model.evaluate(test_generators)
+
+    if PREDICT:
+        img_path = '/home/naseem/My Project/TrafficSign-ComputerVision-python/train/17/00017_00000_00018.png'
+        model = load_model('/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5')
+
+
+        prediction = predict_with_model(img_path=img_path, model=model)
+
+        print("Prediction:", prediction)
