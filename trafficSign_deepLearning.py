@@ -69,7 +69,7 @@ if __name__=='__main__':
         saved_model.evaluate(test_generators)
 
     if PREDICT:
-        img_path = '/home/naseem/My Project/TrafficSign-ComputerVision-python/train/17/00017_00000_00018.png'
+        img_path = '/home/naseem/My Project/TrafficSign-ComputerVision-python/train/2/00002_00003_00024.png'
         model = load_model('/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5')
 
 
