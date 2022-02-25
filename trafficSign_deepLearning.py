@@ -1,5 +1,8 @@
 from my_utils import create_generators
 from deepLearning_model import trafficSign_model
+from tensorflow.keras.callbacks import EarlyStopping
+import os
+from tensorflow.keras.models import load_model
 
 if __name__=='__main__':
 
@@ -15,6 +18,14 @@ if __name__=='__main__':
     )
     number_classes = train_generators.num_classes
 
+    early_stopping = EarlyStopping(
+        min_delta=0.001,
+        patience=10,
+        mode='min',
+        restore_best_weights=True,
+        verbose=1
+    )
+
     model = trafficSign_model(no_classes=number_classes)
     model.compile(
         optimizer='adam',
@@ -26,4 +37,14 @@ if __name__=='__main__':
         batch_size=32,
         epochs=2,
         validation_data=val_generators,
+        callbacks=[early_stopping]
     )
+
+    # Save Model in a h5 format
+    
+    if os.path.isfile(
+    '/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5'
+    ) is False:
+        model.save(
+            '/home/naseem/My Project/TrafficSign-ComputerVision-python//Model.h5'
+        )
